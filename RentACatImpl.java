@@ -60,6 +60,7 @@ public class RentACatImpl implements RentACat {
 	public java.lang.String listCats() {
 		StringBuilder ret = new StringBuilder();
 		for(Cat c: _cats){
+			ret.append("ID ");
 			ret.append(c.getId());
 			ret.append(". ");
 			ret.append(c.getName());
@@ -78,7 +79,9 @@ public class RentACatImpl implements RentACat {
 	 */
 
 	public boolean catExists(int id) {
-		// TODO
+		for(Cat c:_cats){
+			if(c.getId() == id) return true;
+		}
 		return false;
 	}
 
@@ -116,7 +119,7 @@ public class RentACatImpl implements RentACat {
 	 * Given an id, return a reference to the specified cat if a cat with that ID
 	 * exists. Return null if no cat of that ID exists in the list.
 	 * 
-	 * @param int id ID of cat to search for
+	 * @param id ID of cat to search for
 	 * @return Cat searched for if exists, null otherwise
 	 */
 

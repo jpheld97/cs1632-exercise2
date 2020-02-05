@@ -1,0 +1,346 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RentACatImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">&lt;empty package name&gt;</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RentACatImpl (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RentACatImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (8/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    35.2%
+  </span>
+  <span class="absValue">
+    (38/ 108)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;import com.sun.org.apache.xpath.internal.operations.String;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.ArrayList;
+<i>4</i>&nbsp;import java.util.Scanner;
+<i>5</i>&nbsp;
+<b class="fc"><i>6</i>&nbsp;public class RentACatImpl implements RentACat {</b>
+<i>7</i>&nbsp;
+<b class="fc"><i>8</i>&nbsp;	public ArrayList&lt;Cat&gt; _cats = new ArrayList&lt;Cat&gt;();</b>
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;	/**
+<i>11</i>&nbsp;	 * Return a cat. This should call the .returnCat() method on the cat for the
+<i>12</i>&nbsp;	 * passed-in cat id. If the cat with the id exists in the list of _cats and has
+<i>13</i>&nbsp;	 * been rented out, then this method should return true after calling
+<i>14</i>&nbsp;	 * .returnCat() on that cat. Otherwise, the method should return false.
+<i>15</i>&nbsp;	 * 
+<i>16</i>&nbsp;	 * @param id the ID of the cat to rent
+<i>17</i>&nbsp;	 * @return true if cat exists and was rented out, false otherwise
+<i>18</i>&nbsp;	 */
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;	public boolean returnCat(int id) {
+<b class="fc"><i>21</i>&nbsp;		Cat toReturn = getCat(id);</b>
+<b class="fc"><i>22</i>&nbsp;		if(toReturn == null) return false;</b>
+<b class="pc"><i>23</i>&nbsp;		if(toReturn.getRented()) {</b>
+<b class="fc"><i>24</i>&nbsp;			toReturn.returnCat();</b>
+<b class="fc"><i>25</i>&nbsp;			return toReturn.getRented();</b>
+<i>26</i>&nbsp;		}
+<b class="nc"><i>27</i>&nbsp;		return false;</b>
+<i>28</i>&nbsp;	}
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;	/**
+<i>31</i>&nbsp;	 * Rent a cat. This should call the .rentCat() method on the cat for the
+<i>32</i>&nbsp;	 * passed-in cat id. If the cat with the id exists in the list of _cats and has
+<i>33</i>&nbsp;	 * *not* been rented out, then this method should return true after calling
+<i>34</i>&nbsp;	 * .rentCat() on that cat. Otherwise, the method should return false.
+<i>35</i>&nbsp;	 * 
+<i>36</i>&nbsp;	 * @param id the ID of the cat to rent
+<i>37</i>&nbsp;	 * @return true if cat exists and was not rented out, false otherwise
+<i>38</i>&nbsp;	 */
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;	public boolean rentCat(int id) {
+<b class="fc"><i>41</i>&nbsp;		Cat toRent = getCat(id);</b>
+<b class="fc"><i>42</i>&nbsp;		if(toRent == null) return false;</b>
+<b class="pc"><i>43</i>&nbsp;		if(!toRent.getRented()) {</b>
+<b class="nc"><i>44</i>&nbsp;			toRent.rentCat();</b>
+<b class="nc"><i>45</i>&nbsp;			return toRent.getRented();</b>
+<i>46</i>&nbsp;		}
+<b class="fc"><i>47</i>&nbsp;		return false;</b>
+<i>48</i>&nbsp;	}
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;	/**
+<i>51</i>&nbsp;	 * Create a String list from the list of _cats using the .toString() method of
+<i>52</i>&nbsp;	 * each NON-RENTED Cat object in the list. That is, it should only add cats who
+<i>53</i>&nbsp;	 * are available to be rented. These cats should be separated by &quot;\n&quot; characters
+<i>54</i>&nbsp;	 * (line feeds). Example: ID 1. Jennyanydots ID 2. Old Deuteronomy ID 3.
+<i>55</i>&nbsp;	 * Mistoffelees
+<i>56</i>&nbsp;	 * 
+<i>57</i>&nbsp;	 * @return &quot;\n&quot;-delimited list of rentable cats
+<i>58</i>&nbsp;	 */
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;	public java.lang.String listCats() {
+<b class="fc"><i>61</i>&nbsp;		StringBuilder ret = new StringBuilder();</b>
+<b class="fc"><i>62</i>&nbsp;		for(Cat c: _cats){</b>
+<b class="fc"><i>63</i>&nbsp;			ret.append(&quot;ID &quot;);</b>
+<b class="fc"><i>64</i>&nbsp;			ret.append(c.getId());</b>
+<b class="fc"><i>65</i>&nbsp;			ret.append(&quot;. &quot;);</b>
+<b class="fc"><i>66</i>&nbsp;			ret.append(c.getName());</b>
+<b class="fc"><i>67</i>&nbsp;			ret.append(&quot;\n&quot;);</b>
+<b class="fc"><i>68</i>&nbsp;		}</b>
+<b class="fc"><i>69</i>&nbsp;		return ret.toString();</b>
+<i>70</i>&nbsp;	}
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;	/**
+<i>73</i>&nbsp;	 * Given an id, return true if the cat exists in the list of _cats or false if
+<i>74</i>&nbsp;	 * no cat with that id number exists in the list. If list is null or contains 0
+<i>75</i>&nbsp;	 * elements, should always return false.
+<i>76</i>&nbsp;	 * 
+<i>77</i>&nbsp;	 * @param id ID of cat to search for
+<i>78</i>&nbsp;	 * @return true if cat exists in list, false otherwise
+<i>79</i>&nbsp;	 */
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;	public boolean catExists(int id) {
+<b class="fc"><i>82</i>&nbsp;		for(Cat c:_cats){</b>
+<b class="fc"><i>83</i>&nbsp;			if(c.getId() == id) return true;</b>
+<b class="fc"><i>84</i>&nbsp;		}</b>
+<b class="fc"><i>85</i>&nbsp;		return false;</b>
+<i>86</i>&nbsp;	}
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;	/**
+<i>89</i>&nbsp;	 * Given an id, return true if the cat exists in the list of _cats and is
+<i>90</i>&nbsp;	 * available for rent; otherwise return false. If list is null or contains 0
+<i>91</i>&nbsp;	 * elements, should always return false.
+<i>92</i>&nbsp;	 * 
+<i>93</i>&nbsp;	 * @param id ID of cat to search for
+<i>94</i>&nbsp;	 * @return true if cat available for rent, false otherwise
+<i>95</i>&nbsp;	 */
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;	public boolean catAvailable(int id) {
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;		// null / zero-element check
+<b class="pc"><i>100</i>&nbsp;		if (_cats == null || _cats.size() == 0) {</b>
+<b class="fc"><i>101</i>&nbsp;			return false;</b>
+<i>102</i>&nbsp;		}
+<b class="fc"><i>103</i>&nbsp;		Cat c = getCat(id);</b>
+<b class="pc"><i>104</i>&nbsp;		if (c == null) {</b>
+<i>105</i>&nbsp;			// No cat of this ID exists, thus it is not available
+<b class="nc"><i>106</i>&nbsp;			return false;</b>
+<b class="fc"><i>107</i>&nbsp;		} else if (c.getRented()) {</b>
+<i>108</i>&nbsp;			// This cat exists, but has already been rented
+<b class="fc"><i>109</i>&nbsp;			return false;</b>
+<i>110</i>&nbsp;		}
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;		// If cat exists and is not rented, then the cat
+<i>113</i>&nbsp;		// is available to rent
+<b class="fc"><i>114</i>&nbsp;		return true;</b>
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;	}
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;	/**
+<i>119</i>&nbsp;	 * Given an id, return a reference to the specified cat if a cat with that ID
+<i>120</i>&nbsp;	 * exists. Return null if no cat of that ID exists in the list.
+<i>121</i>&nbsp;	 * 
+<i>122</i>&nbsp;	 * @param id ID of cat to search for
+<i>123</i>&nbsp;	 * @return Cat searched for if exists, null otherwise
+<i>124</i>&nbsp;	 */
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;	public Cat getCat(int id) {
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;		// null / zero-element check
+<b class="pc"><i>129</i>&nbsp;		if (_cats == null || _cats.size() == 0) {</b>
+<b class="fc"><i>130</i>&nbsp;			return null;</b>
+<i>131</i>&nbsp;		}
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;		// Loop through every cat in the cat list
+<b class="pc"><i>134</i>&nbsp;		for (Cat c : _cats) {</b>
+<i>135</i>&nbsp;			// If we found a cat whose id matches the id
+<i>136</i>&nbsp;			// of the argument, then we have a match and
+<i>137</i>&nbsp;			// can thus return a reference to that cat
+<b class="fc"><i>138</i>&nbsp;			if (c.getId() == id) {</b>
+<b class="fc"><i>139</i>&nbsp;				return c;</b>
+<i>140</i>&nbsp;			}
+<b class="fc"><i>141</i>&nbsp;		}</b>
+<i>142</i>&nbsp;		// If we get all the way through the list and did
+<i>143</i>&nbsp;		// not find a cat whose ID matches the passed-in
+<i>144</i>&nbsp;		// ID, then the cat is not in the list
+<b class="nc"><i>145</i>&nbsp;		return null;</b>
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;	}
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;	/**
+<i>150</i>&nbsp;	 * Add a cat to the list of _cats.
+<i>151</i>&nbsp;	 * 
+<i>152</i>&nbsp;	 * @param c the Cat to add
+<i>153</i>&nbsp;	 */
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;	public void addCat(Cat c) {
+<b class="fc"><i>156</i>&nbsp;		_cats.add(c);</b>
+<i>157</i>&nbsp;	}
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;	/**
+<i>160</i>&nbsp;	 * Main method
+<i>161</i>&nbsp;	 * 
+<i>162</i>&nbsp;	 * @param args - IGNORED, kept for compatibility
+<i>163</i>&nbsp;	 */
+<i>164</i>&nbsp;	public static void main(String[] args) {
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;		// Turn off automatic bug injection in the Cat class.
+<b class="nc"><i>167</i>&nbsp;		Cat._bugInjectionOn = false;</b>
+<i>168</i>&nbsp;
+<b class="nc"><i>169</i>&nbsp;		RentACat rc = new RentACatImpl();</b>
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;		rc.addCat(new Cat(1, &quot;Jennyanydots&quot;));</b>
+<b class="nc"><i>172</i>&nbsp;		rc.addCat(new Cat(2, &quot;Old Deuteronomy&quot;));</b>
+<b class="nc"><i>173</i>&nbsp;		rc.addCat(new Cat(3, &quot;Mistoffelees&quot;));</b>
+<i>174</i>&nbsp;
+<b class="nc"><i>175</i>&nbsp;		Scanner sc = new Scanner(System.in);</b>
+<b class="nc"><i>176</i>&nbsp;		boolean validCat = false;</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;		int option;
+<b class="nc"><i>179</i>&nbsp;		boolean keepGoing = true;</b>
+<i>180</i>&nbsp;
+<b class="nc"><i>181</i>&nbsp;		while (keepGoing) {</b>
+<b class="nc"><i>182</i>&nbsp;			validCat = false;</b>
+<b class="nc"><i>183</i>&nbsp;			System.out.print(&quot;Option [1,2,3,4] &gt; &quot;);</b>
+<i>184</i>&nbsp;			try {
+<b class="nc"><i>185</i>&nbsp;				option = sc.nextInt();</b>
+<b class="nc"><i>186</i>&nbsp;				switch (option) {</b>
+<i>187</i>&nbsp;				case 1:
+<b class="nc"><i>188</i>&nbsp;					System.out.println(&quot;Cats for Rent&quot;);</b>
+<b class="nc"><i>189</i>&nbsp;					System.out.print(rc.listCats());</b>
+<b class="nc"><i>190</i>&nbsp;					break;</b>
+<i>191</i>&nbsp;				case 2:
+<b class="nc"><i>192</i>&nbsp;					validCat = false;</b>
+<i>193</i>&nbsp;					int catIdToRent;
+<b class="nc"><i>194</i>&nbsp;					while (!validCat) {</b>
+<b class="nc"><i>195</i>&nbsp;						System.out.print(&quot;Rent which cat? &gt; &quot;);</b>
+<i>196</i>&nbsp;						try {
+<b class="nc"><i>197</i>&nbsp;							catIdToRent = sc.nextInt();</b>
+<b class="nc"><i>198</i>&nbsp;							Cat c = rc.getCat(catIdToRent);</b>
+<b class="nc"><i>199</i>&nbsp;							if (c == null) {</b>
+<b class="nc"><i>200</i>&nbsp;								throw new NumberFormatException();</b>
+<b class="nc"><i>201</i>&nbsp;							} else if (c.getRented()) {</b>
+<b class="nc"><i>202</i>&nbsp;								System.out.println(&quot;Sorry, &quot; + c.getName() + &quot; is not here!&quot;);</b>
+<i>203</i>&nbsp;							} else {
+<b class="nc"><i>204</i>&nbsp;								rc.rentCat(catIdToRent);</b>
+<b class="nc"><i>205</i>&nbsp;								System.out.println(c.getName() + &quot; has been rented.&quot;);</b>
+<b class="nc"><i>206</i>&nbsp;								validCat = true;</b>
+<i>207</i>&nbsp;							}
+<b class="nc"><i>208</i>&nbsp;						} catch (NumberFormatException nfex) {</b>
+<b class="nc"><i>209</i>&nbsp;							System.out.println(&quot;Invalid cat ID.&quot;);</b>
+<b class="nc"><i>210</i>&nbsp;						} catch (Exception ex) {</b>
+<b class="nc"><i>211</i>&nbsp;							System.out.println(&quot;Invalid cat ID.&quot;);</b>
+<b class="nc"><i>212</i>&nbsp;							sc.next();</b>
+<b class="nc"><i>213</i>&nbsp;						}</b>
+<i>214</i>&nbsp;					}
+<i>215</i>&nbsp;					break;
+<i>216</i>&nbsp;				case 3:
+<b class="nc"><i>217</i>&nbsp;					validCat = false;</b>
+<i>218</i>&nbsp;					int catIdToReturn;
+<b class="nc"><i>219</i>&nbsp;					while (!validCat) {</b>
+<b class="nc"><i>220</i>&nbsp;						System.out.print(&quot;Return which cat? &gt; &quot;);</b>
+<i>221</i>&nbsp;						try {
+<b class="nc"><i>222</i>&nbsp;							catIdToReturn = sc.nextInt();</b>
+<b class="nc"><i>223</i>&nbsp;							Cat c = rc.getCat(catIdToReturn);</b>
+<b class="nc"><i>224</i>&nbsp;							if (c == null) {</b>
+<b class="nc"><i>225</i>&nbsp;								throw new NumberFormatException();</b>
+<b class="nc"><i>226</i>&nbsp;							} else if (!c.getRented()) {</b>
+<b class="nc"><i>227</i>&nbsp;								System.out.println(c.getName() + &quot; is already here!&quot;);</b>
+<i>228</i>&nbsp;							} else {
+<b class="nc"><i>229</i>&nbsp;								rc.returnCat(catIdToReturn);</b>
+<b class="nc"><i>230</i>&nbsp;								System.out.println(&quot;Welcome back,&quot; + c.getName() + &quot;!&quot;);</b>
+<b class="nc"><i>231</i>&nbsp;								validCat = true;</b>
+<i>232</i>&nbsp;							}
+<b class="nc"><i>233</i>&nbsp;						} catch (NumberFormatException nfex) {</b>
+<b class="nc"><i>234</i>&nbsp;							System.out.println(&quot;Invalid cat ID.&quot;);</b>
+<b class="nc"><i>235</i>&nbsp;						} catch (Exception ex) {</b>
+<b class="nc"><i>236</i>&nbsp;							System.out.println(&quot;Invalid cat ID.&quot;);</b>
+<b class="nc"><i>237</i>&nbsp;							sc.next();</b>
+<b class="nc"><i>238</i>&nbsp;						}</b>
+<i>239</i>&nbsp;					}
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;					break;
+<i>242</i>&nbsp;				case 4:
+<b class="nc"><i>243</i>&nbsp;					keepGoing = false;</b>
+<b class="nc"><i>244</i>&nbsp;					break;</b>
+<i>245</i>&nbsp;				default:
+<b class="nc"><i>246</i>&nbsp;					throw new NumberFormatException();</b>
+<i>247</i>&nbsp;				}
+<b class="nc"><i>248</i>&nbsp;			} catch (Exception nfex) {</b>
+<b class="nc"><i>249</i>&nbsp;				System.err.println(&quot;Please enter 1, 2, 3 or 4&quot;);</b>
+<b class="nc"><i>250</i>&nbsp;				System.err.println(&quot;1. See list of cats for rent&quot;);</b>
+<b class="nc"><i>251</i>&nbsp;				System.err.println(&quot;2. Rent a cat to a customer&quot;);</b>
+<b class="nc"><i>252</i>&nbsp;				System.err.println(&quot;3. Return a cat&quot;);</b>
+<b class="nc"><i>253</i>&nbsp;				System.err.println(&quot;4. Quit&quot;);</b>
+<i>254</i>&nbsp;				// Clear out the non-int in the scanner
+<b class="nc"><i>255</i>&nbsp;				sc.next();</b>
+<b class="nc"><i>256</i>&nbsp;			}</b>
+<i>257</i>&nbsp;		}
+<i>258</i>&nbsp;
+<b class="nc"><i>259</i>&nbsp;		System.out.println(&quot;Closing up shop for the day!&quot;);</b>
+<i>260</i>&nbsp;
+<b class="nc"><i>261</i>&nbsp;		sc.close();</b>
+<i>262</i>&nbsp;	}
+<i>263</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-02-05 14:44</div>
+</div>
+</body>
+</html>
