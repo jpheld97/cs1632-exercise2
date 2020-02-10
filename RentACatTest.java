@@ -49,19 +49,25 @@ public class RentACatTest {
 
 		// 2. Create a mock Cat with ID 1 and name "Jennyanydots", assign to _c1
 		_c1 = mock(Cat.class);
+		Mockito.when(_c1.toString()).thenReturn("ID 1. Jennyanydots");
 		Mockito.when(_c1.getId()).thenReturn(1);
 		Mockito.when(_c1.getName()).thenReturn("Jennyanydots");
-		
+		Mockito.when(_c1.getRented()).thenReturn(false);
+
 		// 3. Create a mock Cat with ID 2 and name "Old Deuteronomy", assign to _c2
 		_c2 = mock(Cat.class);
+		Mockito.when(_c2.toString()).thenReturn("ID 2. Old Deuteronomy");
 		Mockito.when(_c2.getId()).thenReturn(2);
 		Mockito.when(_c2.getName()).thenReturn("Old Deuteronomy");
+		Mockito.when(_c2.getRented()).thenReturn(false);
 
 		// 4. Create a mock Cat with ID 3 and name "Mistoffelees", assign to _c3
 		_c3 = mock(Cat.class);
+		Mockito.when(_c3.toString()).thenReturn("ID 3. Mistoffelees");
 		Mockito.when(_c3.getId()).thenReturn(3);
 		Mockito.when(_c3.getName()).thenReturn("Mistoffelees");
-		
+		Mockito.when(_c3.getRented()).thenReturn(false);
+
 		// Hint: You will have to stub the mocked Cats to make them behave as if the ID
 		// is 1 and name is "Jennyanydots", etc.
 	}
@@ -238,12 +244,11 @@ public class RentACatTest {
 	
 	@Test
 	public void testRentCatFailureNumCats3() {
-        Mockito.when(_c1.getRented()).thenReturn(false);
-        Mockito.when(_c2.getRented()).thenReturn(true);
-        Mockito.when(_c3.getRented()).thenReturn(false);
         _r.addCat(_c1);
         _r.addCat(_c2);
         _r.addCat(_c3);
+        _r.rentCat(2);
+        Mockito.when(_c2.getRented()).thenReturn(true);
         assertFalse(_r.rentCat(2));
 	}
 
