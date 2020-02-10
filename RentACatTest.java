@@ -285,6 +285,7 @@ public class RentACatTest {
         _r.addCat(_c1);
         _r.addCat(_c2);
         _r.addCat(_c3);
+        Mockito.when(_c2.getRented()).thenReturn(false);
         _r.rentCat(2);
         Mockito.when(_c2.getRented()).thenReturn(true);
         assertTrue(_r.returnCat(2));
