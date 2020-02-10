@@ -1,5 +1,3 @@
-import com.sun.org.apache.xpath.internal.operations.String;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -18,11 +16,10 @@ public class RentACatImpl implements RentACat {
 	 */
 
 	public boolean returnCat(int id) {
-		Cat toReturn = getCat(id);
-		if(toReturn == null) return false;
-		if(toReturn.getRented()) {
-			toReturn.returnCat();
-			return toReturn.getRented();
+		Cat c = getCat(id);
+		if(c != null && c.getRented()) {
+			c.returnCat();
+			return true;
 		}
 		return false;
 	}
@@ -38,11 +35,10 @@ public class RentACatImpl implements RentACat {
 	 */
 
 	public boolean rentCat(int id) {
-		Cat toRent = getCat(id);
-		if(toRent == null) return false;
-		if(!toRent.getRented()) {
-			toRent.rentCat();
-			return toRent.getRented();
+		Cat c = getCat(id);
+		if(c != null && !c.getRented()) {
+			c.rentCat();
+			return true;
 		}
 		return false;
 	}
@@ -57,14 +53,18 @@ public class RentACatImpl implements RentACat {
 	 * @return "\n"-delimited list of rentable cats
 	 */
 
-	public java.lang.String listCats() {
+	public String listCats() {
+		// null / zero-element check
+		if (_cats == null || _cats.size() == 0) {return "";}
+
 		StringBuilder ret = new StringBuilder();
-		for(Cat c: _cats){
-			ret.append("ID ");
-			ret.append(c.getId());
-			ret.append(". ");
-			ret.append(c.getName());
-			ret.append("\n");
+		for(Cat c: _cats)
+		{
+			if (!c.getRented()) 
+			{
+				ret.append(c.toString());
+				ret.append("\n");
+			}
 		}
 		return ret.toString();
 	}
