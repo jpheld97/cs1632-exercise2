@@ -279,12 +279,14 @@ public class RentACatTest {
 	
 	@Test
 	public void testReturnCatNumCats3() {
-        Mockito.when(_c1.getRented()).thenReturn(false);
-        Mockito.when(_c2.getRented()).thenReturn(true);
-        Mockito.when(_c3.getRented()).thenReturn(false);
+        // Mockito.when(_c1.getRented()).thenReturn(false);
+        // Mockito.when(_c2.getRented()).thenReturn(true);
+        // Mockito.when(_c3.getRented()).thenReturn(false);
         _r.addCat(_c1);
         _r.addCat(_c2);
         _r.addCat(_c3);
+        _r.rentCat(2);
+        Mockito.when(_c2.getRented()).thenReturn(true);
         assertTrue(_r.returnCat(2));
 	}
 }
