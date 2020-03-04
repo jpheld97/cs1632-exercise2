@@ -1,192 +1,126 @@
-# Unit Testing Exercise 2
+# Exercise 4 Performance Testing Exercise
 
-## Description
+For this exercise, you and your partner will test and improve the
+performance of a monkey simulation software.  When you are asked to improve
+the performance of any code, how would you go about it?  Maybe you will
+start eyeballing the code to guess where the program is wasting a lot of its
+time and try to refactor the code that way.  But what if your code base is
+millions of lines long?  Talk about finding a needle in a haystack.  We will
+learn to use a technique called profiling that takes all the guesswork out
+of the picture.
 
-In this exercise, we will simulate the main Rent-A-Cat rental system software.  This is obviously a "toy" implementation of the vast and powerful Rent-A-Cat apparatus.
-
-I have created a framework for you for this exercise.  It is up to you to fill in the `returnCat()`, `rentCat()`, `listCats()` and `catExists()` methods, and write unit tests for them.  Unit tests must use doubles for the Cat object with appropriate stubbing.  I have intentionally inserted a defect on every Cat method such that an exception is fired if you try to use a real Cat object in any way during your unit testing!  Those defects are turned off when Cat is used within the main RentACat program.
-
-Rent-A-Cat rents cats to customers for various needs (mousing, companionship, homework help, etc.).  From the main menu, users may:
-
-1. See list of cats for rent
-2. Rent a cat to a customer
-3. Return a cat
-4. Quit
-
-A cat which is out for rental cannot be rented and will not be listed until it has been returned.  We will not charge money for this exercise.
-
-## Sample Output
+Profiling is a form of dynamic program analysis where data is collected
+during runtime of a program, usually for the purposes of performance
+optimization.  The data is typically collected through some form of
+instrumentation on the program code, where extra instructions are inserted
+specifically for the purposes of monitoring the program while it runs and
+collecting data.  For Java, this instrumentation happens at the bytecode
+level.  For example, if the profiler wanted to measure how long a method
+takes to execute, it may do instrumentation similar to the following:
 
 ```
-Option [1,2,3,4] > 1
-Cats for Rent
-ID 1. Jennyanydots
-ID 2. Old Deuteronomy
-ID 3. Mistoffelees
-Option [1,2,3,4] > 2
-Rent which cat? > 1
-Jennyanydots has been rented.
-Option [1,2,3,4] > 1
-Cats for Rent
-ID 2. Old Deuteronomy
-ID 3. Mistoffelees
-Option [1,2,3,4] > 2
-Rent which cat? > 1
-Sorry, Jennanydots is not here!
-Rent which cat? > 7
-Invalid cat ID.
-Rent which cat? > 3
-Mistoffelees has been rented.
-Option [1,2,3,4] > 1
-Cats for Rent
-ID 2. Old Deuteronomy
-Option [1,2,3,4] > 3
-Return which cat? > 7
-Invalid cat ID.  
-Return which cat? Jennyanydots
-Invalid cat ID.
-Return which cat? 1
-Welcome back, Jennyanydots!
-Option [1,2,3,4] > 1
-Cats for Rent
-ID 1. Jennyanydots
-ID 2. Old Deuteronomy
-Option [1,2,3,4] > 4
-Closing up shop for the day!
+void foo() {
+  ___instrumentMethodBegin("foo");
+  // body of foo()
+  ___instrumentMethodEnd("foo");
+}
+
+void ___instrumentMethodBegin(String method) {
+  beginTime = ___getTime();
+}
+
+void ___instrumentMethodEnd(String method) {
+  endTime = ___getTime();
+  duration = endTime - beginTime;
+  ___addToMethodRunningTime(method, duration);
+}
 ```
 
-You will modify two classes: RentACatImpl and RentACatTest.  The RentACatImpl class is an (incomplete) implementation of the Rent-A-Cat system.  The RentACatTest class is a JUnit unit test class that tests RentACatImpl.  All locations where you should add code is marked with the // TODO comment.
+But enough of profiling theory, how do I actually use it?  Performance
+debugging through profiling is an iterative process.  On each iteration, you
+will do the following:
 
-We are going to use the TestRunner class to invoke JUnit on the RentACatTest class.  Note that RentACatTest.class is added to the list of classesToTest.
+1. Profile the program.  Sort all methods in descending order of running time and
+   search for refactoring opportunities starting from the top.
+1. Refactor selected method to be more performant (being careful not to change functionality using pinning tests).
+1. Profile again to determine whether you made an improvement, otherwise go back to refactoring.
 
-You should use test doubles/mocks for any references to classes other than the one under test that the tested class is dependent upon (i.e., double or mock any Cat objects).  You do not need to double the ArrayList class used within RentACatImpl even though RentACatImpl is dependent upon it.  ArrayList is a Java standard library class so we will assume that it is fully tested and defect-free at this point. :)
+In this way, on each iteration, you will be able to focus on the method that
+has the potential for improvement.  It is important to profile at the
+beginning of each iteration since you are modifying the program on each
+iteration.
 
-You do not need to test any of the methods in the Cat class since that is an external class that is beyond the unit we are trying to test.
+The code is available under the src/ directory.
 
-## Running Unit Tests
+## MonkeySim Description
 
-If you do this in an IDE such as Eclipse, or with a build tool like Gradle, this can be handled automatically.  HOWEVER, please do not do this!  I want you to realize what is happening "behind the scenes".
+This code runs MonkeySim, which simulates a group of monkeys throwing a banana back around until it gets to the first monkey.  It accepts one argument, which states which monkey has the banana initially.
 
-1. First let's do a sanity check to see if Java is installed properly on your machine.  For Windows try doing:
+The game shall continue until the first monkey gets the banana, at which point the simulation shall end.
+
+The monkey who has the banana shall throw it to another monkey during each round.
+
+If a monkey is even-numbered (e.g., monkey #2, monkey #4, etc.), then the monkey with the banana shall throw the banana to the monkey equal to one-half of that initial monkey's number.  For example, monkey #4 shall throw the banana to monkey #2, and monkey #20 shall throw the banana to monkey #10.
+
+If a monkey is odd-numbered (and not monkey #1), the monkey with the banana shall throw it to the monkey equal to three times the number of that monkey plus one `(3n + 1)`.  For example, monkey #5 shall throw the banana to monkey #16 `((3 * 5) + 1)`.
+
+If Monkey #1 catches the banana, the system shall display the number of rounds it took for Monkey #1 to catch the banana and then the program shall exit.
+
+At each round, the current status of who is doing the throwing and who is catching shall be displayed, along with the round number (which should start at 1).  It should use the following format: "Round 1: Threw banana from Monkey (#54 / ID 223546) to Monkey (#27 / ID 223519)"
+
+Each monkey has an ID; this ID shall remain constant.  For instance, Monkey #5 shall always have ID 223497, and Monkey #160 shall always have ID 223652.  Any changes to the code should not modify the ID value.
+
+Sample runs are shown in the sample_runs.txt file.
+
+## How to Run MonkeySim
+
+1. For Windows do (for running MonkeySim with argument 27):
     ```
-    run.bat
+    run.bat 27
     ```
-    For Mac or Linux, try doing:
+1. For Mac / Linux do (for running MonkeySim with argument 27):
     ```
-    bash run.sh
+    bash run.sh 27
     ```
-    For those of you who prefer Makefiles, you can also do:
-    ```
-    make
-    ```
-    If successful, you will get a message "ALL TESTS PASSSED".  But hold your horses, we aren't done yet!  The tests passed because they are currently empty.
-    
-2. Now you are ready to fill in the test cases in RentACatTest.  If you want to do a sanity test, try a very simple assertion that always succeeds in testGetCatNullNumCats0:
-    ```
-    assertTrue(true);
-    ```
-    Now you see the message "ALL TESTS PASSED" again.  Yes!  Now let's try an assertion that fails.  Change the above to:
-    ```
-    assertFalse(true);
-    ```
-    Now you should see a test failure like the below:
-    ```
-    testGetCatNullNumCats0(RentACatTest): null
 
-    !!! - At least one failure, see above.
-    ```
-    What does that null mean?  It just means you didn't supply a failure message.  Try the following:
-    ```
-    assertFalse("True is not false", true);
-    ```
-    Then you should get:
-    ```
-    testGetCatNullNumCats0(RentACatTest): True is not false
+Alternatively, I've created an Eclipse project for you so you can use Eclipse to import the existing project and run it from there.
 
-    !!! - At least one failure, see above.
-    ```
-    
-3. Now you are ready to start writing the RentACatTest class for real.  Start by adding very simple tests to gain confidence.  Next, try adding more complex cases that require Cat objects.  For that, you will have to modify setUp() to create some Cat test doubles with proper stubs.  We learned how to do that in class.  If you are still unsure, look at the LinkedListTest sample code or the NoogieTest and CoogieTest under the Example/ directory.
+## What to do
 
-## Tips
+In order to determine the "hot spots" of the application, you will need to run a profiler such as VisualVM (download at https://visualvm.github.io/).  Using the profiler, determine a method you can modify to measurably increase the speed of the application without modifying behavior.
 
-1. Check to see if junit works on your machine before starting to code.
-1. We will try to apply the Test Driven Development (TDD) model here.  Try writing the test case(s) FIRST before writing the code for a feature.  This way, you will always have 100% test coverage for the code you have written and are writing.  Hence, if you break any part of it in the course of adding a feature or refactoring your code, you will know immediately.  Otherwise, if you test at the very end, you may have to do some major changes.
-1. Remember to _not_ double the class under test (i.e. RentACat), only classes that it depends upon (i.e. Cat).  In fact, if you don't double Cat and use the actual Cat objects, your tests will most likely fail.  I have injected artificial defects into the Cat class to emulate a buggy external class.
-1. The easiest thing to do is assert against a return value, but you can also assert against attributes of an object.  For example:
-    ```
-    @Test
-    public void testCatName() {
-       assertEquals("Expected name", _cat.getName());
-    }
-    ```
-    You can also use the Mockito verify method to perform behavior verification.
-1. Make use of the @Before and @After methods in your JUnit testing.  @Before and @After methods are invoked before and after each @Test method.  They are used to set up and tear down test fixtures.  Test fixtures in JUnit are objects that need to be created and initialized before performing each test case.  You can think of them as "actors" in your test script.  Having the @Before and @After allows us to avoid duplicating test fixture code in each test case.
+Some tips for using VisualVM:
+1. Your Java app will only show up in VisualVM _during_ execution.  When the MonkeySim application shows up on the left panel, you need to quickly double click on the MonkeySim application and then click on the Profiler tab.  Then, on the Profiler window that shows up on the main pane, quickly click on the CPU button to start profiling CPU utilization.  Finally, click on the "Hot spots" button to get a list of methods sorted by running times.
+![alt text](VisualVM_profiling.png "Using VisualVM profiler")
+If you right click on one of the methods in the "Hot spots" methods list, you'll get a context menu.  If you click on a the "Find in Forward Calls" item, you can see the call tree that got you to that method.
+1. If your app runs very quickly, you may not have time to perform the above actions before the app terminates!  In that case, you may want to insert a sleep() at the beginning of the main() method, during which you can perform these actions.  For example:
+   ```
+   try {
+      Thread.sleep(10000);
+   } catch (InterruptedException iex) {
+   }
+   ```
 
-* Try to ensure that you check not only for "happy path" cases but also edge cases.
-* Tests are usually grouped into whichever classes they are testing, and have a filename that has `Test` appended to the name.  For example, Foo.java would be tested by FooTest.java.
-* Testing println's or other output is difficult - try to have methods return Strings which are easier to test.  It is possible to test for I/O but it requires some extra steps - see Chapter 14, Section 6 of the textbook for instructions.
-  
-## Expected Outcome
+Now you are ready to modify that method.  Remember, the program should work
+EXACTLY the same as before, except it should be faster and take up less CPU
+time.  In order to guarantee this, you need pinning tests.  For the
+exercise, you will use the runs in sample_runs.txt as a systems level
+pinning tests.  Meaning, the output should match the original output exactly
+in each case (except the execution time of course).  Feel free to automate
+the pinning tests using a script like we learned at the beginning of chapter
+12, automated systems testing.
 
-Once you start filling in tests in RentACatTest, you will start to see some of those tests fail for those methods you haven't completed yet for RentACatImpl.  As you start filling in the methods in RentACatImpl, those failures will go away one by one until you again see the output:
-```
-ALL TESTS PASSED
-```
-You have come full circle!  But wait, does this mean RentACat is bug-free?  How do you know if your unit tests themselves had defects and that's why they passed, even when RentACat is buggy?We have to actually verify the unit tests themselves to make sure that they are not defective!  One way to verify unit tests is to test them on buggy programs to see if they detect the bugs as they are intended to.  I have created a buggy version of Rent-A-Cat just for this purpose named RentACatBuggy.java.  In order to apply your unit tests to RentACatBuggy, execute the following.  For Windows:
-```
-runBuggy.bat
-```
-For Mac or Linux, try doing:
-```
-bash runBuggy.sh
-```
-This is the type of output you should expect to get:
-```
-TESTING BUGGY IMPLEMENTATION
-    
-testCatAvailableFalseNumCats0(RentACatTest): null
-testCatAvailableFalseNumCats3(RentACatTest): null
-testCatAvailableTrueNumCats3(RentACatTest): null
-testCatExistsFalseNumCats0(RentACatTest): null
-testCatExistsTrueNumCats3(RentACatTest): null
-testListCatsNumCats0(RentACatTest): expected:<[empty]> but was:<[]>
-testListCatsNumCats3(RentACatTest): expected:<ID 1. Jennyanydots[       ID 2. Old Deuteronomy   ID 3. Mistoffelees              ]> but was:<ID 1. Jennyanydots[
-ID 2. Old Deuteronomy
-ID 3. Mistoffelees
-]>
-testRentCatFailureNumCats0(RentACatTest): null
-testRentCatNumCats3(RentACatTest):
-Wanted but not invoked:
-cat.rentCat();
--> at RentACatTest.testRentCatNumCats3(RentACatTest.java:255)
+Refactor *four* of the most time consuming methods in MonkeySim.  You should
+not change the behavior of any of the methods; only refactor the implementation
+so that they are more efficient.  Three of the methods will be very
+straightforward because they contain obviously redundant computation.  The
+remaining one (generateId) is less straightforward.  All the computation is
+required to generate the ID.  Hint: but do we really need to generate all those
+IDs?
 
-However, there were other interactions with this mock:
-cat.getId();
--> at RentACatBuggy.getCat(RentACatBuggy.java:143)
-
-cat.getRented();
--> at RentACatBuggy.rentCat(RentACatBuggy.java:41)
-
-
-testReturnCatFailureNumCats0(RentACatTest): null
-testReturnCatNumCats3(RentACatTest):
-Wanted but not invoked:
-cat.returnCat();
--> at RentACatTest.testReturnCatNumCats3(RentACatTest.java:292)
-
-However, there were other interactions with this mock:
-cat.getId();
--> at RentACatBuggy.getCat(RentACatBuggy.java:143)
-
-cat.getRented();
--> at RentACatBuggy.returnCat(RentACatBuggy.java:21)
-
-
-
-!!! - At least one failure, see above.
-```
-You can see that all tests fail except the ones for getCat(int id).  That is because I've inserted bugs into RentACatBuggy except for that method.  If your unit test passes any other method, it must be defective.  Time to fix your test.
+This is what I got after optimizing:  
+![alt text](profile.png "VisualVM snapshot after optimizations")  
+I gave argument 27 for the run.  Note that now the run takes approximately 3 seconds to run, which is a marked improvement over 37 minutes for the original code!  Now the most time consuming method is generateId by a wide margin.  But there is no way to refactor that method without changing the output.  Refactoring any other method would have negligible impact on performance.  So this is when you pat yourself on the back and declare victory.
 
 ## Submission
 
@@ -194,28 +128,53 @@ Each pairwise group will submit the exercise *once* to GradeScope, by *one membe
 
 You will do two submissions for this exercise.
 
-1. You will create a github repository just for exercise 2.  Add your partner as a collaborator so both of you have access.  Make sure you keep the repository *PRIVATE* so that nobody else can access your repository.  This applies to all future submissions for this course.  Once you are done modifying code, don't forget to commit and push your changes to the github repository.  When you are done, submit your github repository to GradeScope at the "Exercise 2 GitHub" link.  Once you submit, GradeScope will run the autograder to grade you and give feedback.  If you get deductions, fix your code based on the feedback and resubmit.  Repeat until you don't get deductions.
+1. You will create a github repository just for exercise 4.  Add your partner as a collaborator so both of you have access.  Make sure you keep the repository *PRIVATE* so that nobody else can access your repository.  This applies to all future submissions for this course.  Once you are done modifying code, don't forget to commit and push your changes to the github repository.  When you are done, submit your github repository to GradeScope at the "Exercise 4 GitHub" link.  Once you submit, GradeScope will run the autograder to grade you and give feedback.  If you get deductions, fix your code based on the feedback and resubmit.  Repeat until you don't get deductions.
 
-1. Create a screenshot of code coverage stats given by your IDE of choice and name it code_coverage.png. Example:
+1. Create a screenshot of the VisualVM profiling result running MonkeySim with argument 27 and name it profile.png. Example:
 
-    https://github.com/wonsunahn/CS1632_Spring2020/blob/master/exercises/2/code_coverage.png
+    https://github.com/wonsunahn/CS1632_Spring2020/blob/master/exercises/4/profile.png
 
-    I used Eclipse to generate the screenshot.  Here is the user guide: https://www.eclemma.org/userdoc/launching.html.  It is just a click of a button and requires no extra installation.  You don't have to have 100% coverage for this exercise but you will have coverage requirements for your deliverable.  I have already created an Eclipse project for you in the exercise directory so you can just open that to run TestRunner using File > Open Projects from File System from the menu.  If you can't open the project for some reason, you need to create a new project using File > New > Java Project.  For those of you who are new to eclipse, you need to include the four JAR files under CommandLineJUnit/ as external JARs for it to compile.  You need to go to project properties > Java Build Path > Libraries and Add JARs or Add External JARs.  Also, don't create module-info.java when prompted.
-    
-    When you run the code coverage tool, make sure you run TestRunner, not RentACatImpl.  You can do that by clicking on and highlighting TestRunner.java before clicking on the code coverage button.  Alternatively, you can right click on TestRunner.java and click on the "Coverage as" item in the menu that pops up.  This is important.  If you run RentACat.java, you will be getting the code coverage while playing the game.
+    Make sure the "Hot spots" window is activated listing the methods sorted in descending order of running time (Self Time).
 
-    After you have created the screenshot, save the picture to a PDF file and submit to GradeScope at the "Exercise 2 Coverage" link.  Make sure the picture fits in one page for easy viewing and grading.
+    After you have created the screenshot, save the picture to a PDF file and submit to GradeScope at the "Exercise 4 Profile" link.  Make sure the picture fits in one page for easy viewing and grading.
 
-Please submit by Sunday (2/9) 11:59 PM to get timely feedback.
+Please submit by Sunday (3/8) 11:59 PM to get timely feedback.
 
 IMPORTANT: Please keep the github private!
 
 ## GradeScope Feedback
 
-The GradeScope autograder works in 3 phases:
-1. RentACatTestSolution.(some method) on RentACatImpl: RentACatTestSolution is the solution implementation of RentACatTest.  The purpose of this phase is to test RentACatImpl for defects.
-1. RentACatTest.(some method) on RentACatImpl: RentACatTest is the your submitted implementation of RentACatTest.  The purpose of this phase is to test RentACatTest itself for defects.  Assuming RentACatImpl is defect free (as tested in phase 1.), then all tests in RentACatTest should pass.
-1. RentACatTest.(some method) on RentACatBuggy: RentACatTest is the your submitted implementation of RentACatTest and you are testing against the buggy RentACatBuggy implementation.  The purpose of this phase is to further test RentACatTest for defects more rigorously.  It does this by testing whether RentACatTest finds all the bugs that RentACatTestSolution is able to find within RentACatBuggy.
-If you see test failures, read the feedback given by the autograder, fix your code, and retry.
+It is encouraged that you submit to GradeScope early and often.  Please use the feedback you get on each submission to improve your code!  All the tests have been performed after having called the @Before setUp() method which sets up the test fixture with Monkey #5 having the banana initially (just like when argument 5 has been passed on the commandline).
 
-Beside the feedback given by the autograder, the TA or myself will leave more detailed feedback on the "Feedback on source code" question.  We will also check your code coverage screenshot submission and give feedback.
+The GradeScope autograder works in 2 phases:
+
+1. MonkeySim method pinning tests
+    These are JUnit pinning tests that I wrote to make sure that the important methods in MonkeySim remain pinned down (that is you didn't inadvertently modify their behaviors).  They should all pass with the original MonkeySim and it should stay that way.
+
+1. MonkeySim method performance tests
+    These are JUnit tests that I wrote to see if you made improvements on the four most time consuming methods in MonkeySim.  I set a timeout of 10 ms for each of them and if you don't complete the task within that amount of time, the test fails.  I also test the entire program using runSimulation() after setting up the monkey list to begin with monkey #5.  The simulation has a timeout of 300 ms.  You could potentially try to glean the time consuming methods from looking at the methods that I test, but please don't do that.  See if you can extract that information from the VisualVM tool.  The test output will not be so revealing on your deliverable!
+
+## Resources
+
+* VisualVM Download:  
+https://visualvm.github.io/download.html
+
+* VisualVM Documentation:  
+https://visualvm.github.io/documentation.html
+
+Method profiling is not the only thing that VisualVM knows how to do.  It can
+also profile overall CPU usage, heap memory usage, thread creation/termination,
+class loading/unloading, Java just-in-time compiler activity, etc.  It can also
+profile heap memory in a detailed way to show which types of objects are
+filling the memory and where their allocation sites were.  And needless to say,
+VisualVM is not the only profiling tool out there.
+
+In the unlikely case you can't find what you are looking for in existing
+profilers, you can even write your own profiler using the Java Virtual Machine
+Tool Interface (JVMTI).  JVMTI is what was used to build VisualVM.
+
+* Creating a Debugging and Profiling Agent with JVMTI  
+https://www.oracle.com/technical-resources/articles/javase/jvmti.html
+
+* JVMTI Reference  
+https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html
