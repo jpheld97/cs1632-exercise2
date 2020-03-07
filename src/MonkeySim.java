@@ -57,9 +57,11 @@ public class MonkeySim {
 
 	public static Monkey getFirstMonkey(List<Monkey> ml) {
 
-		Monkey tempM = ml.get(1);
-		if (tempM.getMonkeyNum() == 1){
-			return tempM;
+		if (ml.size() > 1){
+			Monkey tempM = ml.get(1);
+			if (tempM.getMonkeyNum() == 1){
+				return tempM;
+			}			
 		}
 
 		return null;
