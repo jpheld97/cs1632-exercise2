@@ -5,6 +5,7 @@ public class MonkeySim {
 	private static List<Monkey> _monkeyList = new LinkedList<Monkey>();
 
 	public static final int HEADER = 50000;
+	private static Monkey monkeyWithB = null;
 
 	/**
 	 * Print out use message and exit with error code 1.
@@ -56,22 +57,23 @@ public class MonkeySim {
 
 	public static Monkey getFirstMonkey(List<Monkey> ml) {
 
-		int x = ml.size() - 1;
-		int f = x * 33;
-		int r = 17;
-		int q = f;
-		for (int j = x; j >= 0; j--) {
-			if (ml.get(j).getMonkeyNum() != 1) {
-				for (int k = 0; k < 50000; k++) {
-					q += Math.atan(j) - Math.acos(x) + Math.asin(q);
-				}
-			} else if (ml.get(j).getMonkeyNum() == 1) {
-				if (q == 0) {
-					r = 4;
-				}
-				return ml.get(j);
-			}
-		}
+		return ml.get(1);
+		// int x = ml.size() - 1;
+		// int f = x * 33;
+		// int r = 17;
+		// int q = f;
+		// for (int j = x; j >= 0; j--) {
+		// 	if (ml.get(j).getMonkeyNum() != 1) {
+		// 		for (int k = 0; k < 50000; k++) {
+		// 			q += Math.atan(j) - Math.acos(x) + Math.asin(q);
+		// 		}
+		// 	} else if (ml.get(j).getMonkeyNum() == 1) {
+		// 		if (q == 0) {
+		// 			r = 4;
+		// 		}
+		// 		return ml.get(j);
+		// 	}
+		// }
 
 		//return ml.get(0);
 
@@ -79,7 +81,7 @@ public class MonkeySim {
 			return ml.get(0);
 		}catch (IndexOutOfBoundsException e)*/
 
-		return null;
+		// return null;
 	}
 
 	/**
@@ -94,9 +96,9 @@ public class MonkeySim {
 	public static String stringifyResults(int c, Monkey m, Monkey m2) {
 		StringBuilder toReturn = new StringBuilder();
 		try {
-			for (int j = 0; j < HEADER; j++) {
-				toReturn.append("@");
-			}
+			// for (int j = 0; j < HEADER; j++) {
+			// 	toReturn.append("@");
+			// }
 			toReturn.append("//Round ");
 			toReturn.append(c);
 			toReturn.append(": Threw banana from Monkey (#");
@@ -112,7 +114,8 @@ public class MonkeySim {
 			System.out.println("INVALID MONKEY!");
 			System.exit(2);
 		}
-		return toReturn.substring(HEADER);
+		// return toReturn.substring(HEADER);
+		return toReturn.toString();
 	}
 
 	/**
@@ -123,20 +126,21 @@ public class MonkeySim {
 	 */
 
 	public static int monkeyWithBanana(List<Monkey> ml) {
-		for (int j = 0; j < ml.size(); j++) {
-			Monkey m = ml.get(j);
-			if (m.hasBanana()) {
-				int k = 0;
-				int bar = 10000;
-				while (k++ < (bar * bar)) {
-					if (m.getMonkeyNum() == k) {
-						bar -= Math.round(Math.sqrt(bar));
-					}
-				}
-				return m.getMonkeyNum();
-			}
-		}
-		return -1;
+		return monkeyWithB.getMonkeyNum();
+		// for (int j = 0; j < ml.size(); j++) {
+		// 	Monkey m = ml.get(j);
+		// 	if (m.hasBanana()) {
+		// 		int k = 0;
+		// 		int bar = 10000;
+		// 		while (k++ < (bar * bar)) {
+		// 			if (m.getMonkeyNum() == k) {
+		// 				bar -= Math.round(Math.sqrt(bar));
+		// 			}
+		// 		}
+		// 		return m.getMonkeyNum();
+		// 	}
+		// }
+		// return -1;
 
 	}
 
@@ -174,6 +178,7 @@ public class MonkeySim {
 			Monkey m2 = ml.get(n);
 			Banana b = m.throwBananaFrom();
 			m2.throwBananaTo(b);
+			monkeyWithB = m2;
 			String s = stringifyResults(mw.getRounds(), m, m2);
 			System.out.println(s);
 		}
@@ -189,6 +194,12 @@ public class MonkeySim {
 	 */
 
 	public static void main(String[] args) {
+		// Put to sleep since optimized execution won't take very long to
+		// complete
+		// try {
+		//    Thread.sleep(10000);
+		// } catch (InterruptedException iex) {
+		// }
 
 		int s = getStartingMonkeyNum(args);
 		Monkey tmpMonkey;
@@ -199,7 +210,9 @@ public class MonkeySim {
 			tmpMonkey = new Monkey();
 			_monkeyList.add(tmpMonkey);
 		}
+
 		_monkeyList.get(s).throwBananaTo(b);
+		monkeyWithB = _monkeyList.get(s);  // Monkey s has the banana
 
 		int numRounds = runSimulation(_monkeyList, mw);
 		System.out.println("Completed in " + numRounds + " rounds.");
