@@ -133,7 +133,12 @@ public class MonkeySim {
 	 */
 
 	public static int monkeyWithBanana(List<Monkey> ml) {
-		return monkeyWithB.getMonkeyNum();
+		
+		if (ml.size() > 0){
+			return monkeyWithB.getMonkeyNum();		
+		}
+
+		return -1;
 		// for (int j = 0; j < ml.size(); j++) {
 		// 	Monkey m = ml.get(j);
 		// 	if (m.hasBanana()) {
