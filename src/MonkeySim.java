@@ -5,7 +5,7 @@ public class MonkeySim {
 	private static List<Monkey> _monkeyList = new LinkedList<Monkey>();
 
 	public static final int HEADER = 50000;
-	private static Monkey monkeyWithB = null;
+	// private static Monkey monkeyWithB = null;
 
 	/**
 	 * Print out use message and exit with error code 1.
@@ -134,25 +134,25 @@ public class MonkeySim {
 
 	public static int monkeyWithBanana(List<Monkey> ml) {
 		
-		if (ml.size() > 0){
-			return monkeyWithB.getMonkeyNum();		
-		}
-
-		return -1;
-		// for (int j = 0; j < ml.size(); j++) {
-		// 	Monkey m = ml.get(j);
-		// 	if (m.hasBanana()) {
-		// 		int k = 0;
-		// 		int bar = 10000;
-		// 		while (k++ < (bar * bar)) {
-		// 			if (m.getMonkeyNum() == k) {
-		// 				bar -= Math.round(Math.sqrt(bar));
-		// 			}
-		// 		}
-		// 		return m.getMonkeyNum();
-		// 	}
+		// if (ml.size() > 0){
+		// 	return monkeyWithB.getMonkeyNum();		
 		// }
+
 		// return -1;
+		for (int j = 0; j < ml.size(); j++) {
+			Monkey m = ml.get(j);
+			if (m.hasBanana()) {
+				// int k = 0;
+				// int bar = 10000;
+				// while (k++ < (bar * bar)) {
+				// 	if (m.getMonkeyNum() == k) {
+				// 		bar -= Math.round(Math.sqrt(bar));
+				// 	}
+				// }
+				return m.getMonkeyNum();
+			}
+		}
+		return -1;
 
 	}
 
@@ -190,7 +190,7 @@ public class MonkeySim {
 			Monkey m2 = ml.get(n);
 			Banana b = m.throwBananaFrom();
 			m2.throwBananaTo(b);
-			monkeyWithB = m2;
+			// monkeyWithB = m2;
 			String s = stringifyResults(mw.getRounds(), m, m2);
 			System.out.println(s);
 		}
@@ -224,7 +224,7 @@ public class MonkeySim {
 		}
 
 		_monkeyList.get(s).throwBananaTo(b);
-		monkeyWithB = _monkeyList.get(s);  // Monkey s has the banana
+		// monkeyWithB = _monkeyList.get(s);  // Monkey s has the banana
 
 		int numRounds = runSimulation(_monkeyList, mw);
 		System.out.println("Completed in " + numRounds + " rounds.");
